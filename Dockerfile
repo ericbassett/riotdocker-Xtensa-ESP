@@ -58,15 +58,14 @@ RUN gcc -DHOMEDIR=\"/data/riotbuild\" -DUSERNAME=\"riotbuild\" /tmp/create_user.
     && rm /tmp/create_user.c
 
 # Install ESP32 toolchain in /opt/esp (181 MB after cleanup)
+# remember https://github.com/RIOT-OS/RIOT/pull/10801 when updating
 RUN echo 'Installing ESP32 toolchain' >&2 && \
     mkdir -p /opt/esp && \
     cd /opt/esp && \
-    git clone --recursive https://github.com/espressif/esp-idf.git && \
+    git clone https://github.com/espressif/esp-idf.git && \
     cd esp-idf && \
     git checkout -q f198339ec09e90666150672884535802304d23ec && \
-    cd components/esp32/lib && \
-    git checkout -q 534a9b14101af90231d40a4f94924d67bc848d5f && \
-    cd /opt/esp/esp-idf && \
+    git submodule update --init --recursive && \
     rm -rf .git* docs examples make tools && \
     rm -f add_path.sh CONTRIBUTING.rst Kconfig Kconfig.compiler && \
     cd components && \
@@ -79,7 +78,7 @@ RUN echo 'Installing ESP32 toolchain' >&2 && \
     cd /opt/esp && \
     git clone https://github.com/gschorcht/xtensa-esp32-elf.git && \
     cd xtensa-esp32-elf && \
-    git checkout -q ca40fb4c219accf8e7c8eab68f58a7fc14cadbab
+    git checkout -q 414d1f3a577702e927973bd906357ee00d7a6c6c
 
 ENV PATH $PATH:/opt/esp/xtensa-esp32-elf/bin
 
